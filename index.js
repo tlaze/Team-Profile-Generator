@@ -1,12 +1,13 @@
-const Employee = require('./lib/employee');
+// const Employee = require('./lib/employee'); //Might Not Need
 const Manager = require('./lib/manager');
 const Engineer = require('./lib/engineer');
 const Intern = require('./lib/intern');
 
 const fs = require('fs');
 const inquirer = require('inquirer');
+const renderFile = require('./src/render.js')
 
-const fullTeam = [];
+const teamArray = [];
 
 const employeeQuestions = () =>{
     inquirer
@@ -35,7 +36,6 @@ const employeeQuestions = () =>{
             },
         ])
         .then((response) => {
-            console.log(response);
             switch(response.employeePosition){
                 case 'Manager':
                     console.log(`${response.employeeName} is a Manager`);
@@ -62,82 +62,80 @@ const managerQuestions = (initialQuestions) =>{
             message: `What is the Manager's Office Number?`,
             name: 'officeNumber',
         },
+    ])
+    .then((response) => {
+        const newManager = new Manager(initialQuestions.employeeName, initialQuestions.employeeID, initialQuestions.employeeEmail, response.officeNumber)
+        teamArray.push(newManager);
+        addNewTeamMember();
+    })
+}
+
+const engineerQuestions = (initialQuestions) =>{
+    inquirer.prompt ([
+        {
+            type:'input',
+            message: 'Enter their GitHub username',
+            name: 'github',
+        },
+    ])
+    .then((response) => {
+        const newEngineer = new Engineer(initialQuestions.employeeName, initialQuestions.employeeID, initialQuestions.employeeEmail, response.github)
+        teamArray.push(newEngineer);
+        addNewTeamMember();
+    })  
+}
+
+const internQuestions = (initialQuestions) => {
+    inquirer.prompt([
+        {
+            type: 'input',
+            message: 'What is the name of their school?',
+            name: 'schoolName',
+        },
+    ])
+    .then((response) => {
+        const newIntern = new Intern(initialQuestions.employeeName, initialQuestions.employeeID, initialQuestions.employeeEmail, response.school);
+        teamArray.push(newIntern);
+        addNewTeamMember();
+    })
+}
+
+const addNewTeamMember = () => {
+    inquirer.prompt([
         {
             type: 'confirm',
             message: `Employee created! Would you like to add a new employee?`,
             name: 'newEmployee',
-        }
+        },
     ])
     .then((response) => {
-        const newManager = new Manager(initialQuestions.employeeName, initialQuestions.employeeID, initialQuestions.employeeEmail, initialQuestions.employeePosition, response.officeNumber)
-        console.log("New Manager: " + newManager);
-
-        fullTeam.push(newManager);
-        console.log(`Full Team: ${fullTeam}`);
-
         if(response.newEmployee === true){
-            console.log("Create new Employee");
+            console.log("Ok Lets Add Another Employee:");
             employeeQuestions();
         }
         else{
-            console.log("No more new employees");
-            renderTeam(JSON.stringify(fullTeam));
+            renderTeam();
         }
+
     })
 }
 
-// const engineerQuestions = () =>{
-//     inquirer.prompt ([
-//         {
-//             type:'input',
-//             message: 'Enter their GitHub username',
-//             name: 'github',
-//         },
-//         {
-//             type: 'confirm',
-//             message: `Employee created! Would you like to add a new employee?`,
-//             name: 'newEmployee',
-//         }
-//     ])
-//     .then((response) => {
-//         if(response.newEmployee === true){
-//             console.log("Create new Employee");
-//         }
-//         else{
-//             console.log("No more new employees");
-//         }
-//     })
-    
-// }
 
-// const internQuestions = () => {
-//     inquirer.prompt([
-//         {
-//             type: 'input',
-//             message: 'What is the name of their school?',
-//             name: 'schoolName',
-//         },
-//         {
-//             type: 'confirm',
-//             message: `Employee created! Would you like to add a new employee?`,
-//             name: 'newEmployee',
-//         }
-//     ])
-//     .then((response) => {
-//         if(response.newEmployee === true){
-//             console.log("Create new Employee");
-//         }
-//         else{
-//             console.log("No more new employees");
-//         }
-//     })
-// }
+const renderTeam = () => {
 
 
-const renderTeam = (data) => {
-    fs.writeFile('renderData.html', data, (error) =>{
-        error ? console.error(error) : console.log(data)
+    fs.writeFile('./src/render.js', JSON.stringify(teamArray), (error) =>{
+        error ? console.error(error) : console.log(`File Created: ${JSON.stringify(teamArray)}`)
     });
+
+    // fs.appendFile('./src/render.js', JSON.stringify(engineerArray), (error) =>{
+    //     error ? console.error(error) : console.log(`Engineers: ${JSON.stringify(engineerArray)}`)
+    // });
+
+    // fs.appendFile('./src/render.js', JSON.stringify(internArray), (error) =>{
+    //     error ? console.error(error) : console.log(`Interns: ${JSON.stringify(internArray)}`)
+    // });
+
 }
 
 employeeQuestions();

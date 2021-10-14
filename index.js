@@ -1,18 +1,22 @@
-// const Employee = require('./lib/employee'); //Might Not Need
+// Access lib files
 const Manager = require('./lib/manager');
 const Engineer = require('./lib/engineer');
 const Intern = require('./lib/intern');
 
+//Access filesystem
 const fs = require('fs');
+//Access inquirer dependency
 const inquirer = require('inquirer');
+
+//Variable of the index.html path to display html
 const htmlFile = "./dist/index.html";
 
-const teamArray = [];
-
+//function to start program
 const init = () => {
     initialHTML();
 }
 
+//Creates the starting html up until the employee cards
 const initialHTML = () => {
     let htmlStart = `
         <!DOCTYPE html>
@@ -28,7 +32,7 @@ const initialHTML = () => {
         <body>
 
             <header>
-                <div class="jumbotron jumbotron-flud bg-info">
+                <div class="jumbotron jumbotron-flud bg-success">
                     <div class="container">
                         <h1 class="display-3 text-center text-white">Project Members</h1>
                         </div>
@@ -36,9 +40,10 @@ const initialHTML = () => {
                 </div>
             </header>
 
-            <main>
+            <main bg-light>
                 <div class="container">
                     <div class="row justify-content-center">`
+        //Writes above html to index.html            
         fs.writeFile(htmlFile, htmlStart, (err) => {
             if(err){
                 console.error(err);
@@ -48,21 +53,24 @@ const initialHTML = () => {
             }
         })
 }
-
+//Displays each html depending on whether user adds more employees
 const displayRole = (employee) => {
-    console.log(employee);
     let htmlContent = '';
     switch(employee.getRole()){
+        //Switch statement depending on if the user chose each employee. Creates html specific for that employee
+        //and appends it to index.html file
         case 'Manager':
             console.log(`${employee.name} is a Manager`);
             htmlContent = `
-                <div class="card bg-light col-5 m-3 order-1">
-                    <div class="card-body">
-                        <h3 class="card-title text-center">${employee.name}</h3>
-                        <h4 class="card-text text-center">${employee.getRole()}</h4>
-                        <p class="card-text">ID: ${employee.id}</p>
-                        <a href="#" class="card-text">Email: ${employee.email}</a>
-                        <p href="#" class="card-text">Phone#: ${employee.officeNumber}</p>
+            <div class="card bg-light col-3 m-3 order-1">
+                <div class="card-header bg-primary m-2 text-white">
+                    <h4 class="card-title text-center">${employee.name}</h4>
+                    <h5 class="card-text text-center">${employee.getRole()}</h5>
+                </div>
+                <div class="card-body">
+                        <p class="card-text">Employee ID: ${employee.id}</p>
+                        <p class="card-text">Email: <a href="mailto:${employee.email}">${employee.email}</a></p>
+                        <p class="card-text">Phone#: ${employee.officeNumber}</p>
                     </div>
                 </div>`
             fs.appendFile(htmlFile, htmlContent, (err) => {
@@ -74,13 +82,15 @@ const displayRole = (employee) => {
         case 'Engineer':
             console.log(`${employee.name} is an Engineer`);
             htmlContent = `
-                <div class="card bg-light col-3 m-3 order-2">
-                    <div class="card-body">
-                        <h3 class="card-title">${employee.name}</h3>
-                        <h4 class="card-text">${employee.getRole()}</h4>
-                        <p class="card-text">ID: ${employee.id}</p>
-                        <a href="#" class="card-text">Email: ${employee.email}</a><br>
-                        <a href="#" class="card-text">GitHub: ${employee.github}</a>
+            <div class="card bg-light col-3 m-3 order-2">
+                <div class="card-header bg-danger m-2 text-white">
+                    <h4 class="card-title text-center">${employee.name}</h4>
+                    <h5 class="card-text text-center">${employee.getRole()}</h5>
+                </div>
+                <div class="card-body">
+                        <p class="card-text">Employee ID: ${employee.id}</p>
+                        <p class="card-text">Email: <a href="mailto:${employee.email}">${employee.email}</a></p>
+                        <p class="card-text">GitHub: <a href="https://github.com/${employee.github}">${employee.github}</a></p>
                     </div>
                 </div>`
             fs.appendFile(htmlFile, htmlContent, (err) => {
@@ -92,13 +102,15 @@ const displayRole = (employee) => {
         case 'Intern':
             console.log(`${employee.name} is an Intern`) 
             htmlContent = `
-                <div class="card bg-light col-2 m-3 order-3">
+                <div class="card bg-light col-3 m-3 order-3">
+                    <div class="card-header bg-secondary m-2 text-white">
+                        <h4 class="card-title text-center">${employee.name}</h4>
+                        <h5 class="card-text text-center">${employee.getRole()}</h5>
+                    </div>
                     <div class="card-body">
-                        <h3 class="card-title">${employee.name}</h3>
-                        <h4 class="card-text">${employee.getRole()}</h4>
-                        <p class="card-text">ID: ${employee.id}</p>
-                        <a href="#" class="card-text">Email: ${employee.email}</a>
-                        <p href="#" class="card-text">School: ${employee.school}</p>
+                        <p class="card-text">Employee ID: ${employee.id}</p>
+                        <p class="card-text">Email: <a href="mailto:${employee.email}">${employee.email}</a></p>
+                        <p class="card-text">School: ${employee.school}</p>
                     </div>
                 </div>`
             fs.appendFile(htmlFile, htmlContent, (err) => {
@@ -109,7 +121,7 @@ const displayRole = (employee) => {
             break;       
     }
 }
-
+//Closing html content. Gets appended to index.html
 const endingHTML = () => {
     console.log("HTML Complete");
     let htmlEnd = `
@@ -119,6 +131,7 @@ const endingHTML = () => {
         </body>
 
         <footer>
+            <h5 class="text-center">Made by Tom | 2021
         </footer>`
     fs.appendFile(htmlFile, htmlEnd, (err) => {
         if(err){
@@ -126,8 +139,7 @@ const endingHTML = () => {
         }
     })
 }
-
-
+//Prompts the user to enter information for all employees
 const employeeQuestions = () =>{
     inquirer
         .prompt([
@@ -155,6 +167,10 @@ const employeeQuestions = () =>{
             },
     ])
     .then((response) => {
+        //Switch statement depending on which employee the user chose next
+        //Each employee has separate questions.
+        //Uses each employee object to send to displayRole()
+        //Goes to addNewTeamMember()
         switch(response.employeePosition){
             case 'Manager':
                 inquirer.prompt ([
@@ -166,7 +182,6 @@ const employeeQuestions = () =>{
                 ])
                 .then((data) => {
                     const newManager = new Manager(response.employeeName, response.employeeID, response.employeeEmail, data.officeNumber)
-                    teamArray.push(newManager);
                     displayRole(newManager);
                     addNewTeamMember();
                 })
@@ -181,7 +196,6 @@ const employeeQuestions = () =>{
                 ])
                 .then((data) => {
                     const newEngineer = new Engineer(response.employeeName, response.employeeID, response.employeeEmail, data.github)
-                    teamArray.push(newEngineer);
                     displayRole(newEngineer);
                     addNewTeamMember();
                 })  
@@ -196,7 +210,6 @@ const employeeQuestions = () =>{
                 ])
                 .then((data) => {
                     const newIntern = new Intern(response.employeeName, response.employeeID, response.employeeEmail, data.schoolName);
-                    teamArray.push(newIntern);
                     displayRole(newIntern);
                     addNewTeamMember();
                 })
@@ -207,7 +220,9 @@ const employeeQuestions = () =>{
         }
     });
 }
-
+//Asks if user wants to create another employee
+//Repeats employeeQuestions() if true
+//Goes to endingHTML() if not
 const addNewTeamMember = () => {
     inquirer.prompt([
         {
@@ -227,25 +242,5 @@ const addNewTeamMember = () => {
 
     })
 }
-
-
-
-// const renderTeam = () => {
-
-
-//     fs.writeFile('./src/render.js', JSON.stringify(teamArray), (error) =>{
-//         error ? console.error(error) : console.log(`File Created: ${JSON.stringify(teamArray)}`)
-//     });
-
-//     // fs.appendFile('./src/render.js', JSON.stringify(engineerArray), (error) =>{
-//     //     error ? console.error(error) : console.log(`Engineers: ${JSON.stringify(engineerArray)}`)
-//     // });
-
-//     // fs.appendFile('./src/render.js', JSON.stringify(internArray), (error) =>{
-//     //     error ? console.error(error) : console.log(`Interns: ${JSON.stringify(internArray)}`)
-//     // });
-
-// }
-
-
+//Starts program
 init();

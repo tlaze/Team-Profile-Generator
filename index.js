@@ -5,9 +5,48 @@ const Intern = require('./lib/intern');
 
 const fs = require('fs');
 const inquirer = require('inquirer');
-const renderFile = require('./src/render.js')
+const htmlFile = "./dist/index.html";
 
 const teamArray = [];
+
+const init = () => {
+    initialHTML();
+}
+
+const initialHTML = () => {
+    let html = `
+        <!DOCTYPE html>
+        <html lang="en">
+        <head>
+            <meta charset="UTF-8">
+            <meta http-equiv="X-UA-Compatible" content="IE=edge">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Project Team</title>
+        </head>
+        <body>
+            <header>
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="teamTitle">
+                            <h1>Our Members</h1>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <main>`
+        fs.writeFile(htmlFile, html, (err) => {
+            if(err){
+                console.error(err);
+            }
+            else{
+                console.log("HTML Initiated");
+                employeeQuestions();
+            }
+        })
+
+}
+
 
 const employeeQuestions = () =>{
     inquirer
@@ -38,15 +77,24 @@ const employeeQuestions = () =>{
         .then((response) => {
             switch(response.employeePosition){
                 case 'Manager':
-                    console.log(`${response.employeeName} is a Manager`);
-                    managerQuestions(response);
+                    inquirer.prompt ([
+                        {
+                            type: 'input',
+                            message: `What is the Manager's Office Number?`,
+                            name: 'officeNumber',
+                        },
+                    ])
+                    .then((data) => {
+                        const newManager = new Manager(response.employeeName, response.employeeID, response.employeeEmail, data.officeNumber)
+                        teamArray.push(newManager);
+                        displayRole(newManager);
+                        addNewTeamMember();
+                    })
                     break;
                 case 'Engineer':
-                    console.log(`${response.employeeName} is an Engineer`);
                     engineerQuestions(response);
                     break;
                 case 'Intern':
-                    console.log(`${response.employeeName} is an Intern`);
                     internQuestions(response);
                     break;
                 default:
@@ -55,20 +103,6 @@ const employeeQuestions = () =>{
         });
 }
 
-const managerQuestions = (initialQuestions) =>{
-    inquirer.prompt ([
-        {
-            type: 'input',
-            message: `What is the Manager's Office Number?`,
-            name: 'officeNumber',
-        },
-    ])
-    .then((response) => {
-        const newManager = new Manager(initialQuestions.employeeName, initialQuestions.employeeID, initialQuestions.employeeEmail, response.officeNumber)
-        teamArray.push(newManager);
-        addNewTeamMember();
-    })
-}
 
 const engineerQuestions = (initialQuestions) =>{
     inquirer.prompt ([
@@ -94,7 +128,7 @@ const internQuestions = (initialQuestions) => {
         },
     ])
     .then((response) => {
-        const newIntern = new Intern(initialQuestions.employeeName, initialQuestions.employeeID, initialQuestions.employeeEmail, response.school);
+        const newIntern = new Intern(initialQuestions.employeeName, initialQuestions.employeeID, initialQuestions.employeeEmail, response.schoolName);
         teamArray.push(newIntern);
         addNewTeamMember();
     })
@@ -120,6 +154,37 @@ const addNewTeamMember = () => {
     })
 }
 
+const displayRole = (employee) => {
+    console.log(employee);
+    let html = '';
+    switch(employee.getRole()){
+        case 'Manager':
+            console.log(`${employee.name} is a Manager`);
+            html = `
+            <div class="card">
+                <div class="card-body">
+                    <h3 class="card-title">${employee.name}</h3>
+                    <h4 class="card-text">${employee.getRole()}</h4>
+                    <p class="card-text">ID: ${employee.id}</p>
+                    <a href="#" class="card-text">Email: ${employee.email}</a>
+                    <a href="#" class="card-text">Phone #: ${employee.officeNumber}</a>
+                </div>
+            </div>`
+            fs.appendFile(htmlFile, html, (err) => {
+                if(err){
+                    console.err(err);
+                }
+            })
+            break;
+        case 'Engineer':
+            console.log(`${employee.employeeName} is an Engineer`)    
+            break;
+        case 'Intern':
+            console.log(`${employee.employeeName} is an Intern`) 
+            break;       
+    }
+}
+
 
 const renderTeam = () => {
 
@@ -138,4 +203,5 @@ const renderTeam = () => {
 
 }
 
-employeeQuestions();
+
+init();

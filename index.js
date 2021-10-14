@@ -144,7 +144,7 @@ const employeeQuestions = () =>{
         .prompt([
             {
                 type: 'input',
-                message: 'Enter the employees name',
+                message: "Enter the employee's name",
                 name: 'employeeName',
                 validate: function (string) {
                     if(string === ''){

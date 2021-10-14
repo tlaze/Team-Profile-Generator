@@ -63,7 +63,7 @@ const displayRole = (employee) => {
         //and appends it to index.html file
         case 'Manager':
             htmlContent = `
-            <div class="card bg-light col-md-3 m-3 order-1">
+            <div class="card bg-light col-lg-4 m-3 order-1">
                 <div class="card-header bg-primary m-2 text-white">
                     <h4 class="card-title text-center">${employee.name}</h4>
                     <h5 class="card-text text-center">${employee.getRole()}</h5>
@@ -71,7 +71,7 @@ const displayRole = (employee) => {
                 <div class="card-body">
                         <p class="card-text">Employee ID: ${employee.id}</p>
                         <p class="card-text">Email: <a href="mailto:${employee.email}">${employee.email}</a></p>
-                        <p class="card-text">Phone#: ${employee.officeNumber}</p>
+                        <p class="card-text">Phone#: ${employee.officeNumber.slice(0,3)}-${employee.officeNumber.slice(4,7)}-${employee.officeNumber.slice(-4)}</p>
                     </div>
                 </div>`
             fs.appendFile(htmlFile, htmlContent, (err) => {
@@ -82,7 +82,7 @@ const displayRole = (employee) => {
             break;
         case 'Engineer':
             htmlContent = `
-            <div class="card bg-light col-md-3 m-3 order-2">
+            <div class="card bg-light col-lg-3 m-3 order-2">
                 <div class="card-header bg-danger m-2 text-white">
                     <h4 class="card-title text-center">${employee.name}</h4>
                     <h5 class="card-text text-center">${employee.getRole()}</h5>
@@ -101,7 +101,7 @@ const displayRole = (employee) => {
             break;
         case 'Intern':
             htmlContent = `
-                <div class="card bg-light col-md-3 m-3 order-3">
+                <div class="card bg-light col-lg-3 m-3 order-3">
                     <div class="card-header bg-secondary m-2 text-white">
                         <h4 class="card-title text-center">${employee.name}</h4>
                         <h5 class="card-text text-center">${employee.getRole()}</h5>
@@ -146,16 +146,42 @@ const employeeQuestions = () =>{
                 type: 'input',
                 message: 'Enter the employees name',
                 name: 'employeeName',
+                validate: function (string) {
+                    if(string === ''){
+                        return 'Enter a valid name.';
+                    }
+                    else{
+                        return true;
+                    }
+                }
             },
             {
                 type: 'input',
                 message: 'What is their ID number?',
                 name: 'employeeID',
+                validate: function (number) {
+                    if (isNaN(number) || number === '') {
+                        return 'Enter a valid ID "Number"';
+                    } else {
+                        return true;
+                    }
+                }
             },
             {
                 type: 'input',
                 message: 'Now enter their email address.',
                 name: 'employeeEmail',
+                validate: function(email)
+                {
+                    // Regex mail check (return true if valid mail)
+                    valid = /^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()\.,;\s@\"]+\.{0,1})+([^<>()\.,;:\s@\"]{2,}|[\d\.]+))$/.test(email);
+                    if(!valid){
+                        return 'Enter a valid email address.';
+                    }
+                    else{
+                        return true;
+                    }
+                }
             },
             {
                 type: 'list',
@@ -174,8 +200,16 @@ const employeeQuestions = () =>{
                 inquirer.prompt ([
                     {
                         type: 'input',
-                        message: `What is ${response.employeeName}'s office phone number?`,
+                        message: `What is ${response.employeeName}'s office phone number? (No Dashes!)`,
                         name: 'officeNumber',
+                        validate: function (number) {
+
+                            if (isNaN(number) || number === '' || number.length != 10) {
+                                return 'Enter a valid ID "Number"';
+                            } else {
+                                return true;
+                            }
+                        }
                     },
                 ])
                 .then((data) => {

@@ -13,6 +13,8 @@ const htmlFile = "./dist/index.html";
 
 //function to start program
 const init = () => {
+    console.log("Welcome! Now that your project is complete lets show off everyone who contributed.");
+    console.log("Lets Start:")
     initialHTML();
 }
 
@@ -41,7 +43,7 @@ const initialHTML = () => {
             </header>
 
             <main bg-light>
-                <div class="container">
+                <div class="container-fluid">
                     <div class="row justify-content-center">`
         //Writes above html to index.html            
         fs.writeFile(htmlFile, htmlStart, (err) => {
@@ -60,9 +62,8 @@ const displayRole = (employee) => {
         //Switch statement depending on if the user chose each employee. Creates html specific for that employee
         //and appends it to index.html file
         case 'Manager':
-            console.log(`${employee.name} is a Manager`);
             htmlContent = `
-            <div class="card bg-light col-3 m-3 order-1">
+            <div class="card bg-light col-md-3 m-3 order-1">
                 <div class="card-header bg-primary m-2 text-white">
                     <h4 class="card-title text-center">${employee.name}</h4>
                     <h5 class="card-text text-center">${employee.getRole()}</h5>
@@ -80,9 +81,8 @@ const displayRole = (employee) => {
             })
             break;
         case 'Engineer':
-            console.log(`${employee.name} is an Engineer`);
             htmlContent = `
-            <div class="card bg-light col-3 m-3 order-2">
+            <div class="card bg-light col-md-3 m-3 order-2">
                 <div class="card-header bg-danger m-2 text-white">
                     <h4 class="card-title text-center">${employee.name}</h4>
                     <h5 class="card-text text-center">${employee.getRole()}</h5>
@@ -100,9 +100,8 @@ const displayRole = (employee) => {
             })    
             break;
         case 'Intern':
-            console.log(`${employee.name} is an Intern`) 
             htmlContent = `
-                <div class="card bg-light col-3 m-3 order-3">
+                <div class="card bg-light col-md-3 m-3 order-3">
                     <div class="card-header bg-secondary m-2 text-white">
                         <h4 class="card-title text-center">${employee.name}</h4>
                         <h5 class="card-text text-center">${employee.getRole()}</h5>
@@ -123,7 +122,7 @@ const displayRole = (employee) => {
 }
 //Closing html content. Gets appended to index.html
 const endingHTML = () => {
-    console.log("HTML Complete");
+    console.log("All Done! The HTML is updated. Open the index.html file to view the web page.");
     let htmlEnd = `
                     </div>
                 </div>
@@ -131,7 +130,7 @@ const endingHTML = () => {
         </body>
 
         <footer>
-            <h5 class="text-center">Made by Tom | 2021
+            <h6 class="text-center">Made by Tom | 2021</h6>
         </footer>`
     fs.appendFile(htmlFile, htmlEnd, (err) => {
         if(err){
@@ -143,25 +142,24 @@ const endingHTML = () => {
 const employeeQuestions = () =>{
     inquirer
         .prompt([
-        
             {
                 type: 'input',
-                message: 'Enter the name of the Employee.',
+                message: 'Enter the employees name',
                 name: 'employeeName',
             },
             {
                 type: 'input',
-                message: 'Enter the ID number of the Employee.',
+                message: 'What is their ID number?',
                 name: 'employeeID',
             },
             {
                 type: 'input',
-                message: 'Enter the Email address of the Employee.',
+                message: 'Now enter their email address.',
                 name: 'employeeEmail',
             },
             {
                 type: 'list',
-                message: "What is this Employee's position for this project?",
+                message: "What title do they hold?",
                 name: 'employeePosition',
                 choices: ['Manager', 'Engineer', 'Intern'],
             },
@@ -176,7 +174,7 @@ const employeeQuestions = () =>{
                 inquirer.prompt ([
                     {
                         type: 'input',
-                        message: `What is the Manager's Office Number?`,
+                        message: `What is ${response.employeeName}'s office phone number?`,
                         name: 'officeNumber',
                     },
                 ])
@@ -190,7 +188,7 @@ const employeeQuestions = () =>{
                 inquirer.prompt ([
                     {
                         type:'input',
-                        message: 'Enter their GitHub username',
+                        message: `Enter ${response.employeeName}'s GitHub username`,
                         name: 'github',
                     },
                 ])
@@ -204,7 +202,7 @@ const employeeQuestions = () =>{
                 inquirer.prompt([
                     {
                         type: 'input',
-                        message: 'What is the name of their school?',
+                        message: `What school does ${response.employeeName} go to?`,
                         name: 'schoolName',
                     },
                 ])
@@ -227,19 +225,18 @@ const addNewTeamMember = () => {
     inquirer.prompt([
         {
             type: 'confirm',
-            message: `Employee created! Would you like to add a new employee?`,
+            message: `Great! The employee data was created. Would you like to add another?`,
             name: 'newEmployee',
         },
     ])
     .then((response) => {
         if(response.newEmployee === true){
-            console.log("Ok Lets Add Another Employee:");
+            console.log("Ok. Lets add another employee:");
             employeeQuestions();
         }
         else{
             endingHTML();
         }
-
     })
 }
 //Starts program

@@ -14,7 +14,7 @@ const init = () => {
 }
 
 const initialHTML = () => {
-    let html = `
+    let htmlStart = `
         <!DOCTYPE html>
         <html lang="en">
         <head>
@@ -22,8 +22,11 @@ const initialHTML = () => {
             <meta http-equiv="X-UA-Compatible" content="IE=edge">
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
             <title>Project Team</title>
-        </head>
+            <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+            <link rel="stylesheet" type="text/css" href="./dist/style.css">
+            </head>
         <body>
+
             <header>
                 <div class="container-fluid">
                     <div class="row">
@@ -33,20 +36,18 @@ const initialHTML = () => {
                     </div>
                 </div>
             </header>
+
             <main>`
-        fs.writeFile(htmlFile, html, (err) => {
+        fs.writeFile(htmlFile, htmlStart, (err) => {
             if(err){
                 console.error(err);
             }
             else{
-                console.log("HTML Initiated");
                 employeeQuestions();
             }
         })
 
 }
-
-
 const employeeQuestions = () =>{
     inquirer
         .prompt([
@@ -72,60 +73,60 @@ const employeeQuestions = () =>{
                 name: 'employeePosition',
                 choices: ['Manager', 'Engineer', 'Intern'],
             },
-        ])
-        .then((response) => {
-            switch(response.employeePosition){
-                case 'Manager':
-                    inquirer.prompt ([
-                        {
-                            type: 'input',
-                            message: `What is the Manager's Office Number?`,
-                            name: 'officeNumber',
-                        },
-                    ])
-                    .then((data) => {
-                        const newManager = new Manager(response.employeeName, response.employeeID, response.employeeEmail, data.officeNumber)
-                        teamArray.push(newManager);
-                        displayRole(newManager);
-                        addNewTeamMember();
-                    })
-                    break;
-                case 'Engineer':
-                    inquirer.prompt ([
-                        {
-                            type:'input',
-                            message: 'Enter their GitHub username',
-                            name: 'github',
-                        },
-                    ])
-                    .then((data) => {
-                        const newEngineer = new Engineer(response.employeeName, response.employeeID, response.employeeEmail, data.github)
-                        teamArray.push(newEngineer);
-                        displayRole(newEngineer);
-                        addNewTeamMember();
-                    })  
-                    break;
-                case 'Intern':
-                    inquirer.prompt([
-                        {
-                            type: 'input',
-                            message: 'What is the name of their school?',
-                            name: 'schoolName',
-                        },
-                    ])
-                    .then((data) => {
-                        const newIntern = new Intern(response.employeeName, response.employeeID, response.employeeEmail, data.schoolName);
-                        teamArray.push(newIntern);
-                        displayRole(newIntern);
-                        addNewTeamMember();
-                    })
-                    break;
-                default:
-                    console.log("Employee Not Found");
-            }
-        });
+    ])
+    .then((response) => {
+        switch(response.employeePosition){
+            case 'Manager':
+                inquirer.prompt ([
+                    {
+                        type: 'input',
+                        message: `What is the Manager's Office Number?`,
+                        name: 'officeNumber',
+                    },
+                ])
+                .then((data) => {
+                    const newManager = new Manager(response.employeeName, response.employeeID, response.employeeEmail, data.officeNumber)
+                    teamArray.push(newManager);
+                    displayRole(newManager);
+                    addNewTeamMember();
+                })
+                break;
+            case 'Engineer':
+                inquirer.prompt ([
+                    {
+                        type:'input',
+                        message: 'Enter their GitHub username',
+                        name: 'github',
+                    },
+                ])
+                .then((data) => {
+                    const newEngineer = new Engineer(response.employeeName, response.employeeID, response.employeeEmail, data.github)
+                    teamArray.push(newEngineer);
+                    displayRole(newEngineer);
+                    addNewTeamMember();
+                })  
+                break;
+            case 'Intern':
+                inquirer.prompt([
+                    {
+                        type: 'input',
+                        message: 'What is the name of their school?',
+                        name: 'schoolName',
+                    },
+                ])
+                .then((data) => {
+                    const newIntern = new Intern(response.employeeName, response.employeeID, response.employeeEmail, data.schoolName);
+                    teamArray.push(newIntern);
+                    displayRole(newIntern);
+                    addNewTeamMember();
+                })
+                break;
+            default:
+                console.log("Employee Not Found");
+                break;
+        }
+    });
 }
-
 
 const addNewTeamMember = () => {
     inquirer.prompt([
@@ -141,7 +142,7 @@ const addNewTeamMember = () => {
             employeeQuestions();
         }
         else{
-            renderTeam();
+            endingHTML();
         }
 
     })
@@ -149,21 +150,21 @@ const addNewTeamMember = () => {
 
 const displayRole = (employee) => {
     console.log(employee);
-    let html = '';
+    let htmlContent = '';
     switch(employee.getRole()){
         case 'Manager':
             console.log(`${employee.name} is a Manager`);
-            html = `
-            <div class="card">
-                <div class="card-body">
-                    <h3 class="card-title">${employee.name}</h3>
-                    <h4 class="card-text">${employee.getRole()}</h4>
-                    <p class="card-text">ID: ${employee.id}</p>
-                    <a href="#" class="card-text">Email: ${employee.email}</a>
-                    <p href="#" class="card-text">Phone #: ${employee.officeNumber}</p>
-                </div>
-            </div>`
-            fs.appendFile(htmlFile, html, (err) => {
+            htmlContent = `
+                <div class="card">
+                    <div class="card-body">
+                        <h3 class="card-title">${employee.name}</h3>
+                        <h4 class="card-text">${employee.getRole()}</h4>
+                        <p class="card-text">ID: ${employee.id}</p>
+                        <a href="#" class="card-text">Email: ${employee.email}</a>
+                        <p href="#" class="card-text">Phone#: ${employee.officeNumber}</p>
+                    </div>
+                </div>`
+            fs.appendFile(htmlFile, htmlContent, (err) => {
                 if(err){
                     console.err(err);
                 }
@@ -171,17 +172,17 @@ const displayRole = (employee) => {
             break;
         case 'Engineer':
             console.log(`${employee.name} is an Engineer`);
-            html = `
-            <div class="card">
-                <div class="card-body">
-                    <h3 class="card-title">${employee.name}</h3>
-                    <h4 class="card-text">${employee.getRole()}</h4>
-                    <p class="card-text">ID: ${employee.id}</p>
-                    <a href="#" class="card-text">Email: ${employee.email}</a>
-                    <a href="#" class="card-text">GitHub: ${employee.github}</a>
-                </div>
-            </div>`
-            fs.appendFile(htmlFile, html, (err) => {
+            htmlContent = `
+                <div class="card">
+                    <div class="card-body">
+                        <h3 class="card-title">${employee.name}</h3>
+                        <h4 class="card-text">${employee.getRole()}</h4>
+                        <p class="card-text">ID: ${employee.id}</p>
+                        <a href="#" class="card-text">Email: ${employee.email}</a><br>
+                        <a href="#" class="card-text">GitHub: ${employee.github}</a>
+                    </div>
+                </div>`
+            fs.appendFile(htmlFile, htmlContent, (err) => {
                 if(err){
                     console.err(err);
                 }
@@ -189,17 +190,17 @@ const displayRole = (employee) => {
             break;
         case 'Intern':
             console.log(`${employee.name} is an Intern`) 
-            html = `
-            <div class="card">
-                <div class="card-body">
-                    <h3 class="card-title">${employee.name}</h3>
-                    <h4 class="card-text">${employee.getRole()}</h4>
-                    <p class="card-text">ID: ${employee.id}</p>
-                    <a href="#" class="card-text">Email: ${employee.email}</a>
-                    <p href="#" class="card-text">School: ${employee.school}</p>
-                </div>
-            </div>`
-            fs.appendFile(htmlFile, html, (err) => {
+            htmlContent = `
+                <div class="card">
+                    <div class="card-body">
+                        <h3 class="card-title">${employee.name}</h3>
+                        <h4 class="card-text">${employee.getRole()}</h4>
+                        <p class="card-text">ID: ${employee.id}</p>
+                        <a href="#" class="card-text">Email: ${employee.email}</a>
+                        <p href="#" class="card-text">School: ${employee.school}</p>
+                    </div>
+                </div>`
+            fs.appendFile(htmlFile, htmlContent, (err) => {
                 if(err){
                     console.err(err);
                 }
@@ -209,22 +210,37 @@ const displayRole = (employee) => {
 }
 
 
-const renderTeam = () => {
+const endingHTML = () => {
+    console.log("HTML Complete");
+    let htmlEnd = `
+            </main>
+        </body>
 
-
-    fs.writeFile('./src/render.js', JSON.stringify(teamArray), (error) =>{
-        error ? console.error(error) : console.log(`File Created: ${JSON.stringify(teamArray)}`)
-    });
-
-    // fs.appendFile('./src/render.js', JSON.stringify(engineerArray), (error) =>{
-    //     error ? console.error(error) : console.log(`Engineers: ${JSON.stringify(engineerArray)}`)
-    // });
-
-    // fs.appendFile('./src/render.js', JSON.stringify(internArray), (error) =>{
-    //     error ? console.error(error) : console.log(`Interns: ${JSON.stringify(internArray)}`)
-    // });
-
+        <footer>
+        </footer>`
+    fs.appendFile(htmlFile, htmlEnd, (err) => {
+        if(err){
+            console.err(err);
+        }
+    })
 }
+
+// const renderTeam = () => {
+
+
+//     fs.writeFile('./src/render.js', JSON.stringify(teamArray), (error) =>{
+//         error ? console.error(error) : console.log(`File Created: ${JSON.stringify(teamArray)}`)
+//     });
+
+//     // fs.appendFile('./src/render.js', JSON.stringify(engineerArray), (error) =>{
+//     //     error ? console.error(error) : console.log(`Engineers: ${JSON.stringify(engineerArray)}`)
+//     // });
+
+//     // fs.appendFile('./src/render.js', JSON.stringify(internArray), (error) =>{
+//     //     error ? console.error(error) : console.log(`Interns: ${JSON.stringify(internArray)}`)
+//     // });
+
+// }
 
 
 init();

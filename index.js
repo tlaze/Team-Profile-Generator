@@ -224,6 +224,14 @@ const employeeQuestions = () =>{
                         type:'input',
                         message: `Enter ${response.employeeName}'s GitHub username`,
                         name: 'github',
+                        validate: function (valid) {
+
+                            if (valid === "") {
+                                return 'Enter a valid userName';
+                            } else {
+                                return true;
+                            }
+                        }
                     },
                 ])
                 .then((data) => {
@@ -238,7 +246,16 @@ const employeeQuestions = () =>{
                         type: 'input',
                         message: `What school does ${response.employeeName} go to?`,
                         name: 'schoolName',
+                        validate: function (valid) {
+
+                            if (valid === "") {
+                                return 'Enter a valid school name.';
+                            } else {
+                                return true;
+                            }
+                        }
                     },
+                    
                 ])
                 .then((data) => {
                     const newIntern = new Intern(response.employeeName, response.employeeID, response.employeeEmail, data.schoolName);

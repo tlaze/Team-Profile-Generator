@@ -28,16 +28,17 @@ const initialHTML = () => {
         <body>
 
             <header>
-                <div class="container-fluid">
-                    <div class="row">
-                        <div class="teamTitle">
-                            <h1>Our Members</h1>
+                <div class="jumbotron jumbotron-flud bg-info">
+                    <div class="container">
+                        <h1 class="display-3 text-center text-white">Project Members</h1>
                         </div>
                     </div>
                 </div>
             </header>
 
-            <main>`
+            <main>
+                <div class="container">
+                    <div class="row justify-content-center">`
         fs.writeFile(htmlFile, htmlStart, (err) => {
             if(err){
                 console.error(err);
@@ -46,8 +47,87 @@ const initialHTML = () => {
                 employeeQuestions();
             }
         })
-
 }
+
+const displayRole = (employee) => {
+    console.log(employee);
+    let htmlContent = '';
+    switch(employee.getRole()){
+        case 'Manager':
+            console.log(`${employee.name} is a Manager`);
+            htmlContent = `
+                <div class="card bg-light col-5 m-3 order-1">
+                    <div class="card-body">
+                        <h3 class="card-title text-center">${employee.name}</h3>
+                        <h4 class="card-text text-center">${employee.getRole()}</h4>
+                        <p class="card-text">ID: ${employee.id}</p>
+                        <a href="#" class="card-text">Email: ${employee.email}</a>
+                        <p href="#" class="card-text">Phone#: ${employee.officeNumber}</p>
+                    </div>
+                </div>`
+            fs.appendFile(htmlFile, htmlContent, (err) => {
+                if(err){
+                    console.err(err);
+                }
+            })
+            break;
+        case 'Engineer':
+            console.log(`${employee.name} is an Engineer`);
+            htmlContent = `
+                <div class="card bg-light col-3 m-3 order-2">
+                    <div class="card-body">
+                        <h3 class="card-title">${employee.name}</h3>
+                        <h4 class="card-text">${employee.getRole()}</h4>
+                        <p class="card-text">ID: ${employee.id}</p>
+                        <a href="#" class="card-text">Email: ${employee.email}</a><br>
+                        <a href="#" class="card-text">GitHub: ${employee.github}</a>
+                    </div>
+                </div>`
+            fs.appendFile(htmlFile, htmlContent, (err) => {
+                if(err){
+                    console.err(err);
+                }
+            })    
+            break;
+        case 'Intern':
+            console.log(`${employee.name} is an Intern`) 
+            htmlContent = `
+                <div class="card bg-light col-2 m-3 order-3">
+                    <div class="card-body">
+                        <h3 class="card-title">${employee.name}</h3>
+                        <h4 class="card-text">${employee.getRole()}</h4>
+                        <p class="card-text">ID: ${employee.id}</p>
+                        <a href="#" class="card-text">Email: ${employee.email}</a>
+                        <p href="#" class="card-text">School: ${employee.school}</p>
+                    </div>
+                </div>`
+            fs.appendFile(htmlFile, htmlContent, (err) => {
+                if(err){
+                    console.err(err);
+                }
+            })   
+            break;       
+    }
+}
+
+const endingHTML = () => {
+    console.log("HTML Complete");
+    let htmlEnd = `
+                    </div>
+                </div>
+            </main>
+        </body>
+
+        <footer>
+        </footer>`
+    fs.appendFile(htmlFile, htmlEnd, (err) => {
+        if(err){
+            console.err(err);
+        }
+    })
+}
+
+
 const employeeQuestions = () =>{
     inquirer
         .prompt([
@@ -148,82 +228,7 @@ const addNewTeamMember = () => {
     })
 }
 
-const displayRole = (employee) => {
-    console.log(employee);
-    let htmlContent = '';
-    switch(employee.getRole()){
-        case 'Manager':
-            console.log(`${employee.name} is a Manager`);
-            htmlContent = `
-                <div class="card">
-                    <div class="card-body">
-                        <h3 class="card-title">${employee.name}</h3>
-                        <h4 class="card-text">${employee.getRole()}</h4>
-                        <p class="card-text">ID: ${employee.id}</p>
-                        <a href="#" class="card-text">Email: ${employee.email}</a>
-                        <p href="#" class="card-text">Phone#: ${employee.officeNumber}</p>
-                    </div>
-                </div>`
-            fs.appendFile(htmlFile, htmlContent, (err) => {
-                if(err){
-                    console.err(err);
-                }
-            })
-            break;
-        case 'Engineer':
-            console.log(`${employee.name} is an Engineer`);
-            htmlContent = `
-                <div class="card">
-                    <div class="card-body">
-                        <h3 class="card-title">${employee.name}</h3>
-                        <h4 class="card-text">${employee.getRole()}</h4>
-                        <p class="card-text">ID: ${employee.id}</p>
-                        <a href="#" class="card-text">Email: ${employee.email}</a><br>
-                        <a href="#" class="card-text">GitHub: ${employee.github}</a>
-                    </div>
-                </div>`
-            fs.appendFile(htmlFile, htmlContent, (err) => {
-                if(err){
-                    console.err(err);
-                }
-            })    
-            break;
-        case 'Intern':
-            console.log(`${employee.name} is an Intern`) 
-            htmlContent = `
-                <div class="card">
-                    <div class="card-body">
-                        <h3 class="card-title">${employee.name}</h3>
-                        <h4 class="card-text">${employee.getRole()}</h4>
-                        <p class="card-text">ID: ${employee.id}</p>
-                        <a href="#" class="card-text">Email: ${employee.email}</a>
-                        <p href="#" class="card-text">School: ${employee.school}</p>
-                    </div>
-                </div>`
-            fs.appendFile(htmlFile, htmlContent, (err) => {
-                if(err){
-                    console.err(err);
-                }
-            })   
-            break;       
-    }
-}
 
-
-const endingHTML = () => {
-    console.log("HTML Complete");
-    let htmlEnd = `
-            </main>
-        </body>
-
-        <footer>
-        </footer>`
-    fs.appendFile(htmlFile, htmlEnd, (err) => {
-        if(err){
-            console.err(err);
-        }
-    })
-}
 
 // const renderTeam = () => {
 

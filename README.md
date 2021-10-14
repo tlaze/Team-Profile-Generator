@@ -56,11 +56,11 @@
 
   ## ScreenShot
 
-  ![Screenshot](dist\assets\images\screenshot.png)
+  ![screenshot](https://user-images.githubusercontent.com/47471193/137303266-e93a3308-04fb-4ee2-b7dd-43b546ae400c.png)
 
   ## Links
 
-  Live application: No live application for this project.
+  Live application: No live application for this project however here is a video that walks through the app: https://drive.google.com/file/d/1IK1BhKj5MxF4n1tWcgH4H1rDmLX2sNqa/view
 
   Project Repository: https://github.com/tlaze/Team-Profile-Generator
   
